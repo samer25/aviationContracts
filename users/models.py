@@ -23,7 +23,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email,first_name, last_name, password=None):
+    def create_superuser(self, email, first_name, last_name, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_recruiter(self, email,first_name, last_name, password=None):
+    def create_recruiter(self, email, first_name, last_name, password=None):
         user = self.create_user(
             email,
             password,
@@ -57,8 +57,10 @@ class CustomUser(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_recruiter = models.BooleanField(default=False)
