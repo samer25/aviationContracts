@@ -8,6 +8,7 @@ coreschema==0.0.4
 cryptography==36.0.1
 defusedxml==0.7.1
 Django==4.0.2
+django-countries==7.2.1
 django-debug-toolbar==3.2.4
 django-restframework==0.0.1
 django-templated-mail==1.1.1
@@ -19,6 +20,7 @@ itypes==1.2.0
 Jinja2==3.0.3
 MarkupSafe==2.0.1
 oauthlib==3.2.0
+Pillow==9.0.1
 psycopg2-binary==2.9.3
 pycparser==2.21
 PyJWT==2.3.0

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.db import models
 
@@ -38,3 +39,18 @@ class SeekerProfile(models.Model):
     cv = models.FileField(upload_to='seeker/cv',
                           validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx'])], blank=True)
     is_open_to_work = models.BooleanField(default=True)
+
+
+class JobPosts(models.Model):
+    recruiter = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    position = models.CharField(max_length=300)
+    location = CountryField(blank_label='(select country)')
+    salary = models.BigIntegerField(blank=True)
+    aircraft_type = models.CharField(max_length=255, blank=True)  # '(boeing, airbus ...)'
+    sector = models.CharField(max_length=255, blank=True)  # '(aircraft, flight crew ...)'
+    job_role = models.CharField(max_length=255, blank=True)  # '(engineers jobs, office jobs ...)'
+    valid_till = models.DateField(blank=True)
+    organization = models.CharField(max_length=255, blank=True)
+    organization_logo = models.ImageField(upload_to='recruiter/organization_logo')
+    description = models.TextField(blank=True)
+    post_date = models.DateTimeField(auto_now_add=True)
