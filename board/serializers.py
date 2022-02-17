@@ -1,16 +1,17 @@
 from rest_framework import serializers
 
-from board.models import RecruiterProfile, SeekerProfile, JobPosts
+from board.models import RecruiterProfile, SeekerProfile, JobPosts, Applicant
 from users.serializers import CustomUserSerializer
 
 
 class RecruiterProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     user = CustomUserSerializer(read_only=True)
+    membership = serializers.CharField(read_only=True)
 
     class Meta:
         model = RecruiterProfile
-        fields = ['id', 'user', 'company', 'position', 'phone_number', 'member_ship']
+        fields = ['id', 'user', 'company', 'position', 'phone_number', 'membership']
 
     def create(self, validated_data):
         user = self.context['user']
@@ -51,3 +52,17 @@ class JobPostsSerializer(serializers.ModelSerializer):
         job.save()
         return job
 
+
+class CreateApplicantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Applicant
+        fields = ['id', 'user', 'job_post']
+
+
+class ApplicantSerializer(serializers.ModelSerializer):
+    user = CustomUserSerializer(read_only=True)
+    job_post = JobPostsSerializer(read_only=True)
+
+    class Meta:
+        model = Applicant
+        fields = ['id', 'user', 'job_post']

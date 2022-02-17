@@ -2,12 +2,13 @@ from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 
-from board.views import RecruiterProfileAPIView, SeekerProfileAPIView, JobPostsViewSet
+from board.views import RecruiterProfileAPIViewSet, SeekerProfileAPIViewSet, JobPostsAPIViewSet, ApplicantAPIViewSet
 
 router = DefaultRouter()
-router.register('recruiter', RecruiterProfileAPIView, basename='recruiter-profile')
-router.register('seeker', SeekerProfileAPIView, basename='seeker-profile')
-router.register('jobs', JobPostsViewSet, basename='job-posts')
+router.register('recruiter', RecruiterProfileAPIViewSet, basename='recruiter-profile')
+router.register('seeker', SeekerProfileAPIViewSet, basename='seeker-profile')
+router.register('jobs', JobPostsAPIViewSet, basename='job-posts')
+router.register('applicant', ApplicantAPIViewSet, basename='applicant')
 urlpatterns = router.urls
 
 # urlpatterns = [

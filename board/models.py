@@ -105,3 +105,8 @@ class JobPosts(models.Model):
         self.slug = slugify(f'{self.job_creation_id}-{self.position}')
         super().save(*args, **kwargs)
         resizing_image(self.organization_logo)
+
+
+class Applicant(models.Model):
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seeker')
+    job_post = models.ForeignKey(JobPosts, on_delete=models.CASCADE, related_name='job_applied')
