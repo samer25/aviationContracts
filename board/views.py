@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
@@ -66,7 +67,7 @@ class JobPostsViewSet(ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response('User membership does not allow to create job posts more than tree',
+            return Response('User membership does not allow to create more job posts',
                             status=status.HTTP_403_FORBIDDEN)
 
     @action(detail=False, methods=['GET', 'PUT', 'DELETE'])

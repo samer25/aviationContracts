@@ -1,15 +1,12 @@
 import uuid
 
-from django.conf import settings
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.db import models
 
-# Create your models here.
 from django_countries.fields import CountryField
 from social_core.utils import slugify
 
 from core.settings import AUTH_USER_MODEL
-from PIL import Image
 
 
 def resizing_image(image):
