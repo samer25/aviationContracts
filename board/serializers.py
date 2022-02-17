@@ -56,13 +56,13 @@ class JobPostsSerializer(serializers.ModelSerializer):
 class CreateApplicantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Applicant
-        fields = ['id', 'user', 'job_post']
+        fields = ['id', 'user_applied', 'job_post']
 
 
 class ApplicantSerializer(serializers.ModelSerializer):
-    user = CustomUserSerializer(read_only=True)
+    user_applied = CustomUserSerializer(read_only=True)
     job_post = JobPostsSerializer(read_only=True)
 
     class Meta:
         model = Applicant
-        fields = ['id', 'user', 'job_post']
+        fields = ['id', 'user_applied', 'job_post']

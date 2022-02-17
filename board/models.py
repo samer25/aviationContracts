@@ -59,7 +59,7 @@ class RecruiterProfile(models.Model):
 
 
 class SeekerProfile(models.Model):
-    user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     profile_pic = models.ImageField(upload_to='seeker/profile_pic')
     about_me = models.TextField()
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
@@ -108,5 +108,5 @@ class JobPosts(models.Model):
 
 
 class Applicant(models.Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seeker')
+    user_applied = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seeker_applied')
     job_post = models.ForeignKey(JobPosts, on_delete=models.CASCADE, related_name='job_applied')

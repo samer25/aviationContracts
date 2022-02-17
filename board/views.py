@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
@@ -20,7 +21,7 @@ class RecruiterProfileAPIViewSet(ListModelMixin, CreateModelMixin, RetrieveModel
 
     @action(detail=False, methods=['GET', 'PUT'])
     def me(self, request):
-        profile = get_object_or_404(RecruiterProfile, user_id=request.user.id)
+        profile = get_object_or_404(self.queryset, user_id=request.user.id)
         if request.method == 'GET':
             serializer = RecruiterProfileSerializer(profile)
             return Response(serializer.data)
@@ -51,7 +52,8 @@ class SeekerProfileAPIViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMix
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['GET'])
-    def job_applied(self, request):
+    def me_applied_jobs(self, request):
+        # applied = self.queryset.objects.filter(pro)
         applied = Applicant.objects.select_related('job_post').select_related('user').filter(
             user_id=request.user.id).all()
         serializer = ApplicantSerializer(applied, many=True)
@@ -61,6 +63,8 @@ class SeekerProfileAPIViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMix
 class JobPostsAPIViewSet(ModelViewSet):
     queryset = JobPosts.objects.all()
     serializer_class = JobPostsSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['position', 'location', 'aircraft_type', 'salary']
     lookup_field = 'slug'
 
     def get_serializer_context(self):
@@ -80,7 +84,7 @@ class JobPostsAPIViewSet(ModelViewSet):
 
     @action(detail=False, methods=['GET'])
     def my_jobs(self, request):
-        posts = JobPosts.objects.filter(recruiter_id=request.user.id).all()
+        posts = self.queryset.filter(recruiter_id=request.user.id).all()
 
         if request.method == 'GET':
             serializer = JobPostsSerializer(posts, many=True)
@@ -95,8 +99,8 @@ class JobPostsAPIViewSet(ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['GET'])
-    def user_applied(self, request):
-        posts = Applicant.objects.select_related('job_post').select_related('user').filter(
+    def my_jobs_users_applied(self, request):
+        posts = Applicant.objects.select_related('job_post').select_related('user_applied').filter(
             job_post__recruiter_id=request.user.id).all()
         serializer = ApplicantSerializer(posts, many=True)
         return Response(serializer.data)
@@ -107,9 +111,9 @@ class ApplicantAPIViewSet(CreateModelMixin, GenericViewSet):
     serializer_class = CreateApplicantSerializer
 
     def create(self, request, *args, **kwargs):
-        is_applied = self.queryset.filter(user=request.data['user'], job_post=request.data['job_post'])
+        is_applied = self.queryset.filter(user_applied=request.data['user_applied'], job_post=request.data['job_post'])
         if is_applied:
-            return Response('The user already applied')
+            return Response('The user already applied', status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
