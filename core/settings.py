@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework',
+    'corsheaders',
     'django_filters',
     'django_countries',
     'users',
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
@@ -87,7 +89,10 @@ DATABASES = {
         'NAME': config('DB_NAME'),
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': 'localhost'
+        'HOST': 'localhost',
+        'TEST': {
+             'MIRROR': 'default',
+        },
     }
 
 }
@@ -166,9 +171,18 @@ DJOSER = {
     }
 }
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'sammy.codee@gmail.com'
 EMAIL_HOST_PASSWORD = config('SMTP_EMAIL_PASS')
+
+STRIPE_SECRET_KEY = "sk_test_51KUUe2AaHsAlZboo31IDYSGnV993ny72Hzwgtnc1fbrQSTe2LhRB9hpFe4Hi8Uk30fo79FfhbZhdYtKZ0QFUiftv00vN67j7Je"
+STRIPE_PUBLIC_KEY = "pk_test_51KUUe2AaHsAlZboosIU6hU6M2KPNReNsdfVklOzx5FreozkgWJ5Ip4loilEPc68GXTZLA4LIh6M9owoQkEyLaZaA00I85MQ2Q7"
+STRIPE_WEBHOOK_KEY = 'whsec_1afc9c4a5127eaf8725b68a9b1cef8c5e400ad1cdaf0beef01a37376b37293b4'
+
+STRIPE_PRICE_SILVER_PLAN_ID = 'price_1KVY6OAaHsAlZbooCRSGuKic'
+STRIPE_PRICE_GOLD_PLAN_ID = 'price_1KVY8BAaHsAlZbootFI7Qcvh'

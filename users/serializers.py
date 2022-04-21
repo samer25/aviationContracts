@@ -1,6 +1,8 @@
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
 
+# from board.serializers import SeekerProfileSerializer
+
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
@@ -8,5 +10,6 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 
 class CustomUserSerializer(BaseUserSerializer):
+
     class Meta(BaseUserSerializer.Meta):
-        fields = ['id', 'email', 'first_name', 'last_name']
+        fields = ['id', 'email', 'first_name', 'last_name', 'profile']

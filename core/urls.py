@@ -22,8 +22,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('__debug__/', include('debug_toolbar.urls')),
     path('api-auth/', include('rest_framework.urls')),
-    path('', include('users.urls')),
-    path('api/', include('board.urls'))
+    path('api/', include('users.urls')),
+    path('api/', include('board.urls')),
+    # path('api/stripe/', include('payments.urls'))
 
 ]
 

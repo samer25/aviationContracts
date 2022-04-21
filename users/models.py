@@ -5,10 +5,7 @@ from django.db import models
 # Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, email, first_name, last_name, password=None):
-        """
-        Creates and saves a User with the given email, date of
-        birth and password.
-        """
+
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -24,10 +21,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, first_name, last_name, password=None):
-        """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
-        """
+
         user = self.create_user(
             email,
             first_name=first_name,

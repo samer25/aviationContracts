@@ -1,18 +1,17 @@
-
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
-from board.models import RecruiterProfile, JobPosts, SeekerProfile
+from board.models import RecruiterProfileModel, JobPostsModel, SeekerProfileModel
 from users.models import CustomUser
 
 
-@receiver(post_save, sender=RecruiterProfile)
+@receiver(post_save, sender=RecruiterProfileModel)
 def update_user_is_recruiter_if_recruiter_profile_is_created(sender, **kwargs):
     if kwargs['created']:
         CustomUser.objects.update(is_recruiter=True)
 
 
-@receiver(post_delete, sender=SeekerProfile)
-@receiver(post_delete, sender=RecruiterProfile)
+@receiver(post_delete, sender=SeekerProfileModel)
+@receiver(post_delete, sender=RecruiterProfileModel)
 def photo_post_delete_handler(sender, **kwargs):
     recruiter = kwargs['instance']
 
@@ -21,7 +20,7 @@ def photo_post_delete_handler(sender, **kwargs):
         storage.delete(path)
 
 
-@receiver(post_delete, sender=SeekerProfile)
+@receiver(post_delete, sender=SeekerProfileModel)
 def photo_post_delete_handler(sender, **kwargs):
     seeker = kwargs['instance']
     if seeker.cv:
@@ -29,7 +28,7 @@ def photo_post_delete_handler(sender, **kwargs):
         storage.delete(path)
 
 
-@receiver(post_delete, sender=JobPosts)
+@receiver(post_delete, sender=JobPostsModel)
 def photo_post_delete_handler(sender, **kwargs):
     job = kwargs['instance']
     if job.organization_logo:
@@ -37,13 +36,13 @@ def photo_post_delete_handler(sender, **kwargs):
         storage.delete(path)
 
 
-@receiver(pre_save, sender=RecruiterProfile)
-@receiver(pre_save, sender=SeekerProfile)
+@receiver(pre_save, sender=RecruiterProfileModel)
+@receiver(pre_save, sender=SeekerProfileModel)
 def delete_profile_pic_on_change_extension(sender, instance, **kwargs):
     if instance.pk:
         try:
-            old_profile_pic = SeekerProfile.objects.get(pk=instance.pk).profile_pic
-        except SeekerProfile.DoesNotExist or RecruiterProfile.DoesNotExist:
+            old_profile_pic = SeekerProfileModel.objects.get(pk=instance.pk).profile_pic
+        except SeekerProfileModel.DoesNotExist or RecruiterProfileModel.DoesNotExist:
             return
         else:
             new_profile_pic = instance.profile_pic
@@ -51,12 +50,12 @@ def delete_profile_pic_on_change_extension(sender, instance, **kwargs):
                 old_profile_pic.delete(save=False)
 
 
-@receiver(pre_save, sender=SeekerProfile)
+@receiver(pre_save, sender=SeekerProfileModel)
 def delete_cv_on_change_extension(sender, instance, **kwargs):
     if instance.pk:
         try:
-            old_cv = SeekerProfile.objects.get(pk=instance.pk).cv
-        except SeekerProfile.DoesNotExist:
+            old_cv = SeekerProfileModel.objects.get(pk=instance.pk).cv
+        except SeekerProfileModel.DoesNotExist:
             return
         else:
             new_cv = instance.profile_pic
@@ -64,12 +63,12 @@ def delete_cv_on_change_extension(sender, instance, **kwargs):
                 old_cv.delete(save=False)
 
 
-@receiver(pre_save, sender=JobPosts)
+@receiver(pre_save, sender=JobPostsModel)
 def delete_organization_logo_on_change_extension(sender, instance, **kwargs):
     if instance.pk:
         try:
-            old_organization_logo = JobPosts.objects.get(pk=instance.pk).organization_logo
-        except JobPosts.DoesNotExist:
+            old_organization_logo = JobPostsModel.objects.get(pk=instance.pk).organization_logo
+        except JobPostsModel.DoesNotExist:
             return
         else:
             new_organization_logo = instance.organization_logo

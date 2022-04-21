@@ -1,17 +1,14 @@
 import uuid
 
+from django.conf import settings
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.db import models
 
-from django_countries.fields import CountryField
 from social_core.utils import slugify
-
-from core.settings import AUTH_USER_MODEL
 
 
 def resizing_image(image):
     from PIL import Image
-
     img = Image.open(image.path)  # Open image
     # resize image
     if img.height > 300 or img.width > 300:
@@ -20,52 +17,32 @@ def resizing_image(image):
         return img.save(image.path)  # Save it again and override the larger image
 
 
-class RecruiterProfile(models.Model):
-    MEMBERSHIP_NONE = 'N'
-    MEMBERSHIP_SILVER = 'S'
-    MEMBERSHIP_GOLD = 'G'
-
-    MEMBERSHIP_CHOICES = [
-        (MEMBERSHIP_NONE, 'NONE',),
-        (MEMBERSHIP_SILVER, 'Silver',),
-        (MEMBERSHIP_GOLD, 'GOLD',),
-
-    ]
-
-    user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recruiter_profile')
-    profile_pic = models.ImageField(upload_to='recruiter/profile_pic')
+class RecruiterProfileModel(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='recruiter_profile')
+    profile_pic = models.ImageField(upload_to='recruiter/profile_pic', null=True, blank=True)
     company = models.CharField(max_length=255, blank=True)
     position = models.CharField(max_length=255, blank=True)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
-    membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_NONE)
-    available_post = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.user.email
 
     def save(self, *args, **kwargs):
-        if self.membership == 'N':
-            self.available_post = 3
-        elif self.membership == 'S':
-            self.available_post = 10
-        elif self.membership == 'G':
-            self.available_post = 50
-
         super().save(*args, **kwargs)
-
+        print(self.profile_pic)
         resizing_image(self.profile_pic)
 
 
-class SeekerProfile(models.Model):
-    user = models.OneToOneField(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+class SeekerProfileModel(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     profile_pic = models.ImageField(upload_to='seeker/profile_pic')
     about_me = models.TextField()
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
-    country = CountryField(blank_label='(select country)')
+    country = models.CharField(max_length=255)
     cv = models.FileField(upload_to='seeker/cv',
                           validators=[FileExtensionValidator(allowed_extensions=['pdf', 'doc', 'docx'])], blank=True)
     is_open_to_work = models.BooleanField(default=True)
@@ -78,10 +55,10 @@ class SeekerProfile(models.Model):
         resizing_image(self.profile_pic)
 
 
-class JobPosts(models.Model):
-    recruiter = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+class JobPostsModel(models.Model):
+    recruiter = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     position = models.CharField(max_length=300)
-    location = CountryField(blank_label='(select country)')
+    location = models.CharField(max_length=255)
     salary = models.BigIntegerField(blank=True, null=True)
     aircraft_type = models.CharField(max_length=255, blank=True)  # '(boeing, airbus ...)'
     sector = models.CharField(max_length=255, blank=True)  # '(aircraft, flight crew ...)'
@@ -107,6 +84,6 @@ class JobPosts(models.Model):
         resizing_image(self.organization_logo)
 
 
-class Applicant(models.Model):
-    user_applied = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seeker_applied')
-    job_post = models.ForeignKey(JobPosts, on_delete=models.CASCADE, related_name='job_applied')
+class ApplicantModel(models.Model):
+    user_applied = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seeker_applied')
+    job_post = models.ForeignKey(JobPostsModel, on_delete=models.CASCADE, related_name='job_applied')
