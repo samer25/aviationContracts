@@ -72,12 +72,10 @@ class SeekerProfileAPIViewSet(ListModelMixin, CreateModelMixin, RetrieveModelMix
 
     @action(detail=False, methods=['GET'])
     def me_applied_jobs(self, request):
-        # applied = self.queryset.objects.filter(pro)
         applied = ApplicantModel.objects.select_related('job_post').select_related('user_applied').filter(
             user_applied_id=request.user.id).all()
         serializer = ApplicantSerializer(applied, many=True)
         return Response(serializer.data)
-
 
 
 class JobPostsAPIViewSet(ModelViewSet):
@@ -90,9 +88,6 @@ class JobPostsAPIViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {'user': self.request.user}
-
-
-
 
 
 class ApplicantAPIViewSet(CreateModelMixin, GenericViewSet):

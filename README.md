@@ -1,3 +1,140 @@
+aviationContractors endpoints
+
+User endpoint
+
+Getting access token and refresh token:
+
+/api/auth/jwt/create POST
+
+{
+    "email": "",
+    "password": ""
+}
+
+------------
+Register user
+/api/auth/users/ POST GET
+{
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "password": "",
+    "re_password": ""
+}
+
+/api/auth/users/me/  GET PUT
+
+
+{
+    "first_name": "",
+    "last_name": "",
+
+}
+
+------------
+
+Profiles endpoint
+
+api/recruiter/ GET POST
+
+{
+    "profile_pic": null,
+    "company": "",
+    "position": "",
+    "phone_number": ""
+}
+
+
+api/recruiter/me  GET PUT
+
+{
+    "profile_pic": null,
+    "company": "",
+    "position": "",
+    "phone_number": ""
+}
+-------------------------
+Recruiter Profile info
+
+/api/recruiter/my_jobs_users_applied/ GET
+
+/api/recruiter/my_jobs/ GET
+
+
+
+
+----------------------------------
+Seeker Profile
+
+/api/seeker/ GET POST
+
+{
+    "about_me": "",
+    "phone_number": "",
+    "country": null,
+    "cv": null,
+    "is_open_to_work": false
+}
+
+/api/seeker/me/ GET PUT
+
+{
+    "about_me": "",
+    "phone_number": "",
+    "country": null,
+    "cv": null,
+    "is_open_to_work": false
+}
+
+/api/seeker/me_applied_jobs/ GET
+
+
+-------------------------
+Jobs
+
+api/jobs/ GET POST
+
+{
+    "position": "",
+    "location": null,
+    "salary": null,
+    "aircraft_type": "",
+    "sector": "",
+    "job_role": "",
+    "valid_till": null,
+    "organization": "",
+    "organization_logo": null,
+    "description": ""
+}
+
+/api/jobs/:slug/ PUT
+
+{
+    "position": "",
+    "location": null,
+    "salary": null,
+    "aircraft_type": "",
+    "sector": "",
+    "job_role": "",
+    "valid_till": null,
+    "organization": "",
+    "organization_logo": null,
+    "description": ""
+}
+
+
+/api/applicant/ POST
+
+{
+    "user_applied": user_id,
+    "job_post": job_id
+}
+
+----------------------------------
+
+
+
+
 **Title**
 ----
   <_Additional information about your API call. Try to use verbs that match both request type (fetching vs modifying) and plurality (one vs multiple)._>

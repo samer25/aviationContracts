@@ -4,20 +4,9 @@ from board.models import RecruiterProfileModel, SeekerProfileModel, JobPostsMode
 from users.serializers import CustomUserSerializer
 
 
-# class SubscriptionSerializer(serializers.ModelSerializer):
-#     available_post = serializers.IntegerField(read_only=True)
-#     plan_end_date = serializers.DateTimeField(read_only=True)
-#
-#     class Meta:
-#         model = SubscriptionPlanModel
-#         fields = ['id', 'membership', 'available_post', 'plan_end_date']
-
-
 class RecruiterProfileSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     user = CustomUserSerializer(read_only=True)
-
-    # subscriptions = SubscriptionSerializer(read_only=True)
 
     class Meta:
         model = RecruiterProfileModel
